@@ -1,19 +1,34 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
+import { computed } from 'vue'
+import LaunchFilters from '../components/LaunchFilter.vue'
+import ResultsCounter from '../components/ResultsCounter.vue'
 import GET_LAUNCHES_QUERY from '../graphql/launches.gql'
 
 const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
+const { year, filtered } = useLaunchFilter(computed(() => result.value?.launchesPast || []))
+const { order, sorted } = useLaunchSort(filtered)
 </script>
 
 <template>
   <v-container fluid class="py-10 bg-grey-lighten-4 fill-height align-start">
     <v-container>
-      <h1 class="text-h4 mb-2 text-blue-grey-darken-3 font-weight-regular d-flex align-center flex-wrap ga-3">
-        SpaceX
-        <span class="font-weight-bold text-blue-darken-2">Missions</span>
-        <v-icon color="blue-darken-2">mdi-rocket-outline</v-icon>
-      </h1>
-      <p class="text-subtitle-1 text-grey-darken-1 mb-8">Recent launch data and mission parameters</p>
+      <v-row class="mb-4">
+        <v-col cols="12">
+          <h1
+            class="text-h4 mb-2 text-blue-grey-darken-3 font-weight-regular d-flex align-center flex-wrap ga-3"
+          >
+            SpaceX
+            <span class="font-weight-bold text-blue-darken-2">Missions</span>
+            <v-icon color="blue-darken-2">mdi-rocket-outline</v-icon>
+          </h1>
+          <p class="text-subtitle-1 text-grey-darken-1 mb-0">Recent launch data and mission parameters</p>
+        </v-col>
+      </v-row>
+
+      <LaunchFilters v-model:year="year" v-model:order="order" />
+
+      <ResultsCounter v-if="!loading" :count="sorted.length" :year="year" />
 
       <v-row v-if="loading">
         <v-col v-for="i in 3" :key="i" cols="12" md="6" lg="4">
@@ -31,8 +46,8 @@ const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
         Unable to retrieve mission data. {{ error.message }}
       </v-alert>
 
-      <v-row v-if="!loading && result?.launchesPast">
-        <v-col v-for="launch in result.launchesPast" :key="launch.mission_name" cols="12" md="6" lg="4">
+      <v-row v-if="!loading && sorted.length > 0">
+        <v-col v-for="launch in sorted" :key="launch.mission_name" cols="12" md="6" lg="4">
           <v-card
             flat
             class="rounded-xl border border-opacity-50 h-100 transition-swing card-hover-blue"
@@ -98,10 +113,10 @@ const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
         </v-col>
       </v-row>
 
-      <v-row v-if="!loading && !error && !result?.launchesPast?.length">
+      <v-row v-if="!loading && !error && sorted.length === 0">
         <v-col cols="12">
           <v-alert type="info" variant="tonal" icon="mdi-information-outline">
-            No past launches found at this time.
+            No missions found for the selected year.
           </v-alert>
         </v-col>
       </v-row>
