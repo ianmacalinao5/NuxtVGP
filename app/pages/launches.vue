@@ -90,7 +90,18 @@ const { order, sorted } = useLaunchSort(filtered)
                     Rocket Vehicle
                   </div>
                   <div class="d-flex align-center">
-                    <v-chip size="small" color="blue" variant="tonal" class="font-weight-bold">
+                    <v-chip
+                      v-if="launch.rocket?.rocket?.id"
+                      size="small"
+                      color="blue"
+                      variant="tonal"
+                      class="font-weight-bold rocket-chip"
+                      @click="$router.push(`/rockets/${launch.rocket.rocket.id}`)"
+                    >
+                      {{ launch.rocket?.rocket_name || 'N/A' }}
+                      <v-icon end size="x-small">mdi-arrow-right</v-icon>
+                    </v-chip>
+                    <v-chip v-else size="small" color="blue" variant="tonal" class="font-weight-bold">
                       {{ launch.rocket?.rocket_name || 'N/A' }}
                     </v-chip>
                   </div>
@@ -134,5 +145,14 @@ const { order, sorted } = useLaunchSort(filtered)
   transform: translateY(-5px);
   box-shadow: 0 10px 30px -10px rgba(33, 150, 243, 0.2) !important;
   border-color: #bbdefb !important;
+}
+
+.rocket-chip {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rocket-chip:hover {
+  transform: scale(1.05);
 }
 </style>
