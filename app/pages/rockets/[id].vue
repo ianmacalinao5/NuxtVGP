@@ -14,7 +14,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
 <template>
   <v-container fluid class="py-10 bg-grey-lighten-4 fill-height align-start">
     <v-container>
-      <!-- Back Button -->
       <v-btn
         variant="text"
         color="blue-darken-2"
@@ -25,7 +24,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
         Back to Missions
       </v-btn>
 
-      <!-- Loading State -->
       <v-row v-if="loading">
         <v-col cols="12">
           <v-skeleton-loader
@@ -36,7 +34,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
         </v-col>
       </v-row>
 
-      <!-- Error State -->
       <v-alert
         v-if="error"
         type="error"
@@ -47,15 +44,12 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
         Unable to retrieve rocket details. {{ error.message }}
       </v-alert>
 
-      <!-- Rocket Details -->
       <v-row v-if="!loading && result?.rocket">
         <v-col cols="12">
           <v-card flat class="rounded-xl" color="white">
-            <!-- Header Section -->
             <v-sheet height="8" color="blue-darken-2" class="w-100"></v-sheet>
 
             <div class="pa-8">
-              <!-- Title -->
               <div class="d-flex align-center justify-space-between mb-6">
                 <div>
                   <div class="text-overline text-blue-grey mb-1">Rocket Vehicle</div>
@@ -68,7 +62,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
                 </v-avatar>
               </div>
 
-              <!-- Description -->
               <div class="mb-8">
                 <h3 class="text-h6 font-weight-bold text-blue-grey-darken-3 mb-3">Description</h3>
                 <p class="text-body-1 text-grey-darken-2">
@@ -78,11 +71,9 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
 
               <v-divider class="mb-8"></v-divider>
 
-              <!-- Technical Specifications -->
               <h3 class="text-h6 font-weight-bold text-blue-grey-darken-3 mb-4">Technical Specifications</h3>
 
               <v-row>
-                <!-- First Flight -->
                 <v-col cols="12" sm="6" md="4">
                   <v-card flat color="blue-lighten-5" class="pa-4 rounded-lg">
                     <div class="d-flex align-center mb-2">
@@ -101,7 +92,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
                   </v-card>
                 </v-col>
 
-                <!-- Height -->
                 <v-col cols="12" sm="6" md="4">
                   <v-card flat color="blue-lighten-5" class="pa-4 rounded-lg">
                     <div class="d-flex align-center mb-2">
@@ -119,7 +109,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
                   </v-card>
                 </v-col>
 
-                <!-- Diameter -->
                 <v-col cols="12" sm="6" md="4">
                   <v-card flat color="blue-lighten-5" class="pa-4 rounded-lg">
                     <div class="d-flex align-center mb-2">
@@ -137,7 +126,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
                   </v-card>
                 </v-col>
 
-                <!-- Mass -->
                 <v-col cols="12" sm="6" md="4">
                   <v-card flat color="blue-lighten-5" class="pa-4 rounded-lg">
                     <div class="d-flex align-center mb-2">
@@ -155,7 +143,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
                   </v-card>
                 </v-col>
 
-                <!-- Stages -->
                 <v-col cols="12" sm="6" md="4">
                   <v-card flat color="blue-lighten-5" class="pa-4 rounded-lg">
                     <div class="d-flex align-center mb-2">
@@ -175,7 +162,6 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
         </v-col>
       </v-row>
 
-      <!-- No Data State -->
       <v-row v-if="!loading && !error && !result?.rocket">
         <v-col cols="12">
           <v-alert type="info" variant="tonal" icon="mdi-information-outline">

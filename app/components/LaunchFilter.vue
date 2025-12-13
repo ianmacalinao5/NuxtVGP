@@ -52,8 +52,8 @@ defineEmits<{
         :model-value="order"
         label="Sort by Date"
         :items="[
-          { title: 'Newest First', value: 'desc' },
-          { title: 'Oldest First', value: 'asc' },
+          { title: 'Latest', value: 'desc' },
+          { title: 'Oldest', value: 'asc' },
         ]"
         variant="outlined"
         density="compact"
