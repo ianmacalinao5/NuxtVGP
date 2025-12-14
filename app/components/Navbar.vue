@@ -6,6 +6,7 @@ const drawer = ref(false)
 const navItems = [
   { title: 'Home', to: '/', icon: 'mdi-home' },
   { title: 'Launches', to: '/launches', icon: 'mdi-rocket-launch' },
+  { title: 'Favorites', to: '/favorites', icon: 'mdi-heart' },
 ]
 </script>
 

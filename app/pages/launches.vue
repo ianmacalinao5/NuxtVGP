@@ -1,32 +1,50 @@
 <script setup lang="ts">
+import GET_LAUNCHES_QUERY from '@/graphql/launches.gql'
 import { useQuery } from '@vue/apollo-composable'
-import { computed } from 'vue'
-import LaunchFilters from '../components/LaunchFilter.vue'
-import ResultsCounter from '../components/ResultsCounter.vue'
-import GET_LAUNCHES_QUERY from '../graphql/launches.gql'
 
 const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
+
 const { year, filtered } = useLaunchFilter(computed(() => result.value?.launchesPast || []))
 const { order, sorted } = useLaunchSort(filtered)
+
+const mounted = ref(false)
+
+onMounted(() => {
+  mounted.value = true
+})
+
+const favoriteStore = useFavoritesStore()
+
+const toggleFavorite = (launch: any) => {
+  const rocket = launch?.rocket?.rocket
+  if (!rocket?.id) return
+
+  favoriteStore.toggle({
+    id: rocket.id,
+    name: launch.rocket.rocket_name,
+  })
+}
+
+const isFavorite = (launch: any) => {
+  if (!mounted.value) return false
+
+  const rocketId = launch?.rocket?.rocket?.id
+  return rocketId ? favoriteStore.isFavorite(rocketId) : false
+}
 </script>
 
 <template>
   <v-container fluid class="py-10 bg-grey-lighten-4 fill-height align-start">
     <v-container>
-      <v-row class="mb-4">
-        <v-col cols="12">
-          <h1
-            class="text-h4 mb-2 text-blue-grey-darken-3 font-weight-regular d-flex align-center flex-wrap ga-3"
-          >
-            SpaceX
-            <span class="font-weight-bold text-blue-darken-2">Missions</span>
-            <v-icon color="blue-darken-2">mdi-rocket-outline</v-icon>
-          </h1>
-          <p class="text-subtitle-1 text-grey-darken-1 mb-0">Recent launch data and mission parameters</p>
-        </v-col>
-      </v-row>
-
-      <LaunchFilters v-model:year="year" v-model:order="order" />
+      <PageHeader
+        title-main="SpaceX"
+        title-accent="Missions"
+        subtitle="Recent launch data and mission parameters"
+        icon="mdi-rocket-outline"
+      />
+      <ClientOnly>
+        <LaunchFilters v-model:year="year" v-model:order="order" />
+      </ClientOnly>
 
       <ResultsCounter v-if="!loading" :count="sorted.length" :year="year" />
 
@@ -89,7 +107,7 @@ const { order, sorted } = useLaunchSort(filtered)
                   <div class="text-caption text-blue-grey-lighten-2 font-weight-bold text-uppercase">
                     Rocket Vehicle
                   </div>
-                  <div class="d-flex align-center">
+                  <div class="d-flex align-center justify-space-between">
                     <v-chip
                       v-if="launch.rocket?.rocket?.id"
                       size="small"
@@ -104,6 +122,23 @@ const { order, sorted } = useLaunchSort(filtered)
                     <v-chip v-else size="small" color="blue" variant="tonal" class="font-weight-bold">
                       {{ launch.rocket?.rocket_name || 'N/A' }}
                     </v-chip>
+                    <v-btn
+                      v-if="mounted"
+                      size="small"
+                      color="pink"
+                      variant="tonal"
+                      @click="toggleFavorite(launch)"
+                    >
+                      <v-icon start size="x-small">
+                        {{ isFavorite(launch) ? 'mdi-heart' : 'mdi-heart-outline' }}
+                      </v-icon>
+                      {{ isFavorite(launch) ? 'Favorited' : 'Favorite' }}
+                    </v-btn>
+
+                    <v-btn v-else size="small" color="pink" variant="tonal" disabled>
+                      <v-icon start size="x-small">mdi-heart-outline</v-icon>
+                      Favorite
+                    </v-btn>
                   </div>
                 </v-col>
 

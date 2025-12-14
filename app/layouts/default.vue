@@ -1,10 +1,8 @@
-<script setup>
-import Navbar from '~/components/Navbar.vue'
-</script>
-
 <template>
   <v-app>
-    <Navbar />
+    <ClientOnly>
+      <Navbar />
+    </ClientOnly>
 
     <v-main>
       <slot />

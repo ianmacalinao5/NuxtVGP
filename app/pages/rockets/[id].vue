@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { useRoute } from 'vue-router'
 import GET_ROCKET_QUERY from '../../graphql/rocket.gql'
 
 const route = useRoute()
@@ -53,7 +52,7 @@ const { result, loading, error } = useQuery(GET_ROCKET_QUERY, {
               <div class="d-flex align-center justify-space-between mb-6">
                 <div>
                   <div class="text-overline text-blue-grey mb-1">Rocket Vehicle</div>
-                  <h1 class="text-h3 font-weight-bold text-blue-darken-3 mb-2">
+                  <h1 class="text-h4 font-weight-bold text-blue-darken-3 mb-2">
                     {{ result.rocket.name }}
                   </h1>
                 </div>
