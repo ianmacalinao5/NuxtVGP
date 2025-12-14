@@ -1,4 +1,5 @@
 import type { Pinia } from 'pinia'
+import { indexedDbStorage } from '@/utils/indexedDbStorage'
 import { createStatePersistence } from 'pinia-plugin-state-persistence'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -6,7 +7,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   pinia.use(
     createStatePersistence({
-      key: 'nuxt-app',
+      key: 'spacex-app',
+      storage: indexedDbStorage,
     }),
   )
 })

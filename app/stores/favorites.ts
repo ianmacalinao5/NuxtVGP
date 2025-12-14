@@ -1,5 +1,4 @@
 import type { FavoriteRocket } from '@/types'
-import { defineStore } from 'pinia'
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({

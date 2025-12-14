@@ -5,32 +5,10 @@ import { useQuery } from '@vue/apollo-composable'
 const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
 
 const { year, filtered } = useLaunchFilter(computed(() => result.value?.launchesPast || []))
+
 const { order, sorted } = useLaunchSort(filtered)
 
-const mounted = ref(false)
-
-onMounted(() => {
-  mounted.value = true
-})
-
-const favoriteStore = useFavoritesStore()
-
-const toggleFavorite = (launch: any) => {
-  const rocket = launch?.rocket?.rocket
-  if (!rocket?.id) return
-
-  favoriteStore.toggle({
-    id: rocket.id,
-    name: launch.rocket.rocket_name,
-  })
-}
-
-const isFavorite = (launch: any) => {
-  if (!mounted.value) return false
-
-  const rocketId = launch?.rocket?.rocket?.id
-  return rocketId ? favoriteStore.isFavorite(rocketId) : false
-}
+const { toggleFavorite, isFavorite } = useFavorite()
 </script>
 
 <template>
@@ -122,23 +100,14 @@ const isFavorite = (launch: any) => {
                     <v-chip v-else size="small" color="blue" variant="tonal" class="font-weight-bold">
                       {{ launch.rocket?.rocket_name || 'N/A' }}
                     </v-chip>
-                    <v-btn
-                      v-if="mounted"
-                      size="small"
-                      color="pink"
-                      variant="tonal"
-                      @click="toggleFavorite(launch)"
-                    >
-                      <v-icon start size="x-small">
-                        {{ isFavorite(launch) ? 'mdi-heart' : 'mdi-heart-outline' }}
-                      </v-icon>
-                      {{ isFavorite(launch) ? 'Favorited' : 'Favorite' }}
-                    </v-btn>
-
-                    <v-btn v-else size="small" color="pink" variant="tonal" disabled>
-                      <v-icon start size="x-small">mdi-heart-outline</v-icon>
-                      Favorite
-                    </v-btn>
+                    <ClientOnly>
+                      <v-btn size="small" color="pink" variant="tonal" @click="toggleFavorite(launch)">
+                        <v-icon start size="x-small">
+                          {{ isFavorite(launch) ? 'mdi-heart' : 'mdi-heart-outline' }}
+                        </v-icon>
+                        {{ isFavorite(launch) ? 'Favorited' : 'Favorite' }}
+                      </v-btn>
+                    </ClientOnly>
                   </div>
                 </v-col>
 
