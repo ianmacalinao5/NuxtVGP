@@ -2,16 +2,32 @@
 defineProps<{
   year: string
   order: 'asc' | 'desc'
+  search: string
 }>()
 
 defineEmits<{
   'update:year': [value: string]
   'update:order': [value: 'asc' | 'desc']
+  'update:search': [value: string]
 }>()
 </script>
 
 <template>
-  <v-row align="center">
+  <v-row align="center" class="mb-4">
+    <v-col cols="12">
+      <v-text-field
+        :model-value="search"
+        label="Search missions..."
+        placeholder="Search by mission name, rocket, launch site, or details"
+        variant="outlined"
+        density="compact"
+        hide-details
+        prepend-inner-icon="mdi-magnify"
+        clearable
+        @update:model-value="$emit('update:search', $event || '')"
+      ></v-text-field>
+    </v-col>
+
     <v-col cols="12" md="6">
       <v-select
         :model-value="year"

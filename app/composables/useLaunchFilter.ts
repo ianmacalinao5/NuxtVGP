@@ -1,15 +1,19 @@
-export function useLaunchFilter(launchesRef: { value: any[] }) {
-  const year = ref('All')
+import type { Launch, YearFilter } from '@/types'
+
+export function useLaunchFilter(launchesRef: Ref<Launch[]> | ComputedRef<Launch[]>) {
+  const year = ref<YearFilter>('All')
+
   const filtered = computed(() => {
-    if (!launchesRef.value || !Array.isArray(launchesRef.value)) {
+    const launches = launchesRef.value
+    if (!launches || !Array.isArray(launches) || launches.length === 0) {
       return []
     }
 
-    if (year.value === 'All') return launchesRef.value
+    if (year.value === 'All') return launches
 
-    return launchesRef.value.filter((l: { launch_date_utc: string | number | Date }) => {
-      const y = new Date(l.launch_date_utc).getFullYear().toString()
-      return y === year.value
+    return launches.filter((launch) => {
+      const launchYear = new Date(launch.launch_date_utc).getFullYear().toString()
+      return launchYear === year.value
     })
   })
 

@@ -4,9 +4,13 @@ import { useQuery } from '@vue/apollo-composable'
 
 const { result, loading, error } = useQuery(GET_LAUNCHES_QUERY)
 
-const { year, filtered } = useLaunchFilter(computed(() => result.value?.launchesPast || []))
+const launches = computed(() => result.value?.launchesPast || [])
 
-const { order, sorted } = useLaunchSort(filtered)
+const { year, filtered } = useLaunchFilter(launches)
+
+const { searchQuery, searched } = useSearch(filtered)
+
+const { order, sorted } = useLaunchSort(searched)
 
 const { toggleFavorite, isFavorite } = useFavorite()
 </script>
@@ -21,7 +25,7 @@ const { toggleFavorite, isFavorite } = useFavorite()
         icon="mdi-rocket-outline"
       />
       <ClientOnly>
-        <LaunchFilters v-model:year="year" v-model:order="order" />
+        <LaunchFilters v-model:year="year" v-model:order="order" v-model:search="searchQuery" />
       </ClientOnly>
 
       <ResultsCounter v-if="!loading" :count="sorted.length" :year="year" />
@@ -131,7 +135,7 @@ const { toggleFavorite, isFavorite } = useFavorite()
       <v-row v-if="!loading && !error && sorted.length === 0">
         <v-col cols="12">
           <v-alert type="info" variant="tonal" icon="mdi-information-outline">
-            No missions found for the selected year.
+            No missions found{{ searchQuery ? ' matching your search' : ' for the selected year' }}.
           </v-alert>
         </v-col>
       </v-row>
